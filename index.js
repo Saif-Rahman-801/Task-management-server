@@ -33,6 +33,7 @@ async function run() {
     // await client.connect();
     const database = client.db("TodoDB");
     const todoCollections = database.collection("TodoCollections");
+    const pendingCollections = database.collection("pendingCollections");
 
     app.post("/todos", async (req, res) => {
         const user = req.body;
@@ -42,6 +43,18 @@ async function run() {
 
     app.get("/todos", async (req, res) => {
         const cursor = todoCollections.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      });
+
+    app.post("/pending", async (req, res) => {
+        const user = req.body;
+        const result = await pendingCollections.insertOne(user);
+        res.send(result);
+    });
+
+    app.get("/pending", async (req, res) => {
+        const cursor = pendingCollections.find();
         const result = await cursor.toArray();
         res.send(result);
       });
