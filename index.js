@@ -9,7 +9,7 @@ app.use(
   cors({
     origin: [
       "https://marvelous-medovik-366b22.netlify.app",
-    //   "http://localhost:5173",
+      "http://localhost:5173",
     ],
   })
 );
@@ -31,6 +31,23 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
+    const database = client.db("TodoDB");
+    const todoCollections = database.collection("TodoCollections");
+
+    app.post("/todos", async (req, res) => {
+        const user = req.body;
+        const result = await todoCollections.insertOne(user);
+        res.send(result);
+    });
+
+    app.get("/todos", async (req, res) => {
+        const cursor = todoCollections.find();
+        const result = await cursor.toArray();
+        res.send(result);
+      });
+
+
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     // console.log(
